@@ -68,7 +68,7 @@ public class SearchServlet extends HttpServlet {
       } else {
         // 4. Perform the search and store the results in a request attribute.
         // This makes the 'result' list accessible to the JSP page.
-        List<String> searchResult = model.searchFor(searchString);
+        List<List<String>> searchResult = model.searchFor(searchString);
         request.setAttribute("result", searchResult);
       }
 
