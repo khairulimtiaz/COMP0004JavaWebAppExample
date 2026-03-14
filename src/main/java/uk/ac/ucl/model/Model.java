@@ -27,9 +27,12 @@ public class Model {
     String gender = dataFrame.getValue("GENDER", row);
     String id = dataFrame.getValue("ID", row);
 
+    String status = deathdate.isEmpty() ? "Alive" : "Deceased";
+
     onePSummary.put("NAME", name);
     onePSummary.put("BIRTHDATE", birthdate);
     onePSummary.put("DEATHDATE", deathdate);
+    onePSummary.put("STATUS", status);
     onePSummary.put("GENDER", gender);
     onePSummary.put("ID", id);
 
@@ -47,7 +50,10 @@ public class Model {
   public Map<String,String> getPatientById(String id) {
     for (int row = 0; row < dataFrame.getRowCount(); row++) {
       if (dataFrame.getValue("ID", row).equals(id)) {
-        return getPatientInfo(row);
+        Map<String,String> patientInfo= getPatientInfo(row);
+        if (patientInfo.get("DEATHDATE").isEmpty())
+        {patientInfo.put("DEATHDATE", "Alive");}
+        return patientInfo;
       }
     }
     throw new IllegalArgumentException("Patient not found: " + id);
@@ -74,7 +80,7 @@ public class Model {
         if (dataFrame.getValue(colName, row).toLowerCase()
                 .contains(lowerKeyword))
         {
-          matchedList.add(getPatientInfo(row));
+          matchedList.add(getOneSummary(row));
           //break to avoid repeated results
           break;
         }

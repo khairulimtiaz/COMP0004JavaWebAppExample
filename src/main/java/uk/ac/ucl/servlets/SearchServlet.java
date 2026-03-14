@@ -71,6 +71,8 @@ public class SearchServlet extends HttpServlet {
         // This makes the 'result' list accessible to the JSP page.
         List<Map<String,String>> searchResult = model.searchFor(searchString);
         request.setAttribute("result", searchResult);
+        request.setAttribute("searchKeyword", searchString);
+        request.setAttribute("resultCount", searchResult.size());
       }
 
       // 5. Forward the request to the JSP page for display.

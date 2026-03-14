@@ -1,39 +1,63 @@
 <%@ page import="java.util.List" %>
+<%@ page import="java.util.Map" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <html>
 <head>
   <jsp:include page="/meta.jsp"/>
-  <title>Patient Data App</title>
+  <title>Search Results</title>
 </head>
 <body>
 <jsp:include page="/header.jsp"/>
 <div class="main">
-  <h1>Search Result</h1>
+  <h2>Search Results</h2>
   <%
     String errorMessage = (String) request.getAttribute("errorMessage");
-    if (errorMessage != null)
-    {
+    if (errorMessage != null) {
   %>
-      <p style="color: red;"><%= errorMessage %></p>
+    <p style="color: red;"><%= errorMessage %></p>
   <%
     }
-    List<String> patients = (List<String>) request.getAttribute("result");
-    if (patients != null && patients.size() != 0)
-    {
+    List<Map<String,String>> patients = (List<Map<String,String>>) request.getAttribute("result");
+    if (patients != null && !patients.isEmpty()) {
+  %>
+  <%
+    String keyword = (String) request.getAttribute("searchKeyword");
+    Integer count = (Integer) request.getAttribute("resultCount");
+    if (keyword != null) {
+  %>
+    <p>Showing <%= count %> result(s) for: <strong><%= keyword %></strong></p>
+  <%
+    }
+  %>
+
+  <table border="1">
+    <tr>
+      <th>Name</th>
+      <th>Date of Birth</th>
+      <th>Gender</th>
+      <th>Status</th>
+    </tr>
+    <%
+      for (Map<String,String> patient : patients) {
     %>
-    <ul>
-      <%
-        for (String patient : patients)
-        {
-      %>
-      <li><%=patient%></li>
-     <% }
-    } else if (errorMessage == null)
-    {%>
-      <p>Nothing found</p>
-  <%}%>
-  </ul>
+    <tr>
+      <td><a href="/patientDetail?id=<%= patient.get("ID") %>"><%= patient.get("NAME") %></a></td>
+      <td><%= patient.get("BIRTHDATE") %></td>
+      <td><%= patient.get("GENDER") %></td>
+      <td><%= patient.get("STATUS") %></td>
+    </tr>
+    <%
+      }
+    } else if (errorMessage == null) {
+    %>
+      <p>No patients found matching your search.</p>
+    <%
+    }
+    %>
+  </table>
+  <br>
+  <a href="/search.html">Search Again</a> | <a href="/patientList">Patient List</a>
 </div>
 <jsp:include page="/footer.jsp"/>
 </body>

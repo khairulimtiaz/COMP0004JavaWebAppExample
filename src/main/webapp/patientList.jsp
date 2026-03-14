@@ -30,19 +30,13 @@
       List<Map<String,String>> patients = (List<Map<String,String>>) request.getAttribute("patientsSummary");
       if (patients != null) {
         for (Map<String,String> patient : patients) {
-          String status;
-          if (patient.get("DEATHDATE").isEmpty()) {
-              status = "Alive";
-          } else {
-              status = "Deceased";
-          }
     %>
     <tr>
       <td><a href="/patientDetail?id=<%= patient.get("ID") %>"><%= patient.get("NAME") %></a></td>
       <td><%= patient.get("BIRTHDATE") %></td>
       <td><%= patient.get("GENDER") %></td>
-      <td><%= status %></td>
-    </tr>
+      <td><%= patient.get("STATUS") %></td>
+     </tr>
     <%
         }
       }
