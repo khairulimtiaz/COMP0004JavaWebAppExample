@@ -24,13 +24,14 @@
         <tr><td>Marital Status</td><td><%= patient.get("MARITAL") %></td></tr>
         <tr><td>Race</td><td><%= patient.get("RACE") %></td></tr>
         <tr><td>Ethnicity</td><td><%= patient.get("ETHNICITY") %></td></tr>
-        <tr><td>Death Date</td><td><%= patient.get("DEATHDATE") %></td></tr>
+        <tr><td>Status</td><td><%= patient.get("STATUS") %></td></tr>
+        <tr><td>Death Date</td><td><%= patient.get("DEATHDATE")%></td></tr>
     </table>
     <%
         }
     %>
     <br>
-    <a href="/patientList">Back to Patient List</a>
+    <a href="/patientList">Back to Patient List</a> | <a href="/index.html">Home</a>
 </div>
 <jsp:include page="/footer.jsp"/>
 </body>

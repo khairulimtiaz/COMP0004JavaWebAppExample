@@ -42,6 +42,8 @@
       }
     %>
   </table>
+  <br>
+  <a href="/index.html">Home</a>
 </div>
 <jsp:include page="/footer.jsp"/>
 </body>

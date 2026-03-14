@@ -1,6 +1,7 @@
 package uk.ac.ucl.model;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class DataFrame {
     private ArrayList<Column> columns = new ArrayList<>();
@@ -23,8 +24,8 @@ public class DataFrame {
         throw new  IllegalArgumentException("Column not found" + targetColumnName);
     }
 
-    public ArrayList<String> getColumnNames(){
-        ArrayList<String> names = new ArrayList<>();
+    public List<String> getColumnNames(){
+        List<String> names = new ArrayList<>();
         for (Column column:columns)
         {
             names.add(column.getName());

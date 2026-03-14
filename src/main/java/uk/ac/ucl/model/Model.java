@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.time.LocalDate;
+import java.time.Period;
+import java.util.LinkedHashMap;
 
 public class Model {
   private DataFrame dataFrame;
@@ -50,10 +53,7 @@ public class Model {
   public Map<String,String> getPatientById(String id) {
     for (int row = 0; row < dataFrame.getRowCount(); row++) {
       if (dataFrame.getValue("ID", row).equals(id)) {
-        Map<String,String> patientInfo= getPatientInfo(row);
-        if (patientInfo.get("DEATHDATE").isEmpty())
-        {patientInfo.put("DEATHDATE", "Alive");}
-        return patientInfo;
+        return getPatientInfo(row);
       }
     }
     throw new IllegalArgumentException("Patient not found: " + id);
@@ -65,6 +65,8 @@ public class Model {
     for (String column : dataFrame.getColumnNames()) {
       patient.put(column, dataFrame.getValue(column, row));
     }
+    String status = patient.get("DEATHDATE").isEmpty() ? "Alive" : "Deceased";
+    patient.put("STATUS", status);
     return patient;
   }
 
@@ -88,4 +90,74 @@ public class Model {
     }
     return matchedList;
   }
+
+
+  //operations
+
+  private int calculateAge(String birthdate)
+  {
+    LocalDate birth = LocalDate.parse(birthdate);
+    return Period.between(birth, LocalDate.now()).getYears();
+  }
+
+  public Map<String,String> getOldestAlivePatient()
+  {
+    int oldestRow = -1;
+    int oldestAge = -1;
+
+    for (int row = 0; row < dataFrame.getRowCount(); row++)
+    {
+      if (dataFrame.getValue("DEATHDATE", row).isEmpty())
+      {
+        int age = calculateAge(dataFrame.getValue("BIRTHDATE", row));
+        if (age > oldestAge)
+        {
+          oldestAge = age;
+          oldestRow = row;
+        }
+      }
+    }
+
+    if (oldestRow == -1)
+    {
+      throw new IllegalStateException("No alive patients found");
+    }
+
+    Map<String,String> result = getOneSummary(oldestRow);
+    result.put("AGE", String.valueOf(oldestAge));
+    return result;
+  }
+
+  public Map<String,Integer> getAliveDeceasedCount()
+  {
+    int alive = 0;
+    int deceased = 0;
+    for (int row = 0; row < dataFrame.getRowCount(); row++)
+    {
+      if (dataFrame.getValue("DEATHDATE", row).isEmpty())
+      {
+        alive++;
+      }
+      else
+      {
+        deceased++;
+      }
+    }
+    Map<String,Integer> result = new LinkedHashMap<>();
+    result.put("Alive", alive);
+    result.put("Deceased", deceased);
+    return result;
+  }
+
+  public Map<String,Integer> getCountByCity()
+  {
+    Map<String,Integer> cityCount = new LinkedHashMap<>();
+    for (int row = 0; row < dataFrame.getRowCount(); row++)
+    {
+      String city = dataFrame.getValue("CITY", row);
+      cityCount.put(city, cityCount.getOrDefault(city, 0) + 1);
+    }
+    return cityCount;
+  }
+
 }

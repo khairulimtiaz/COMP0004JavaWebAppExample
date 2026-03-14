@@ -57,7 +57,7 @@
     %>
   </table>
   <br>
-  <a href="/search.html">Search Again</a> | <a href="/patientList">Patient List</a>
+  <a href="/search.html">Search Again</a> | <a href="/index.html">Home</a>
 </div>
 <jsp:include page="/footer.jsp"/>
 </body>

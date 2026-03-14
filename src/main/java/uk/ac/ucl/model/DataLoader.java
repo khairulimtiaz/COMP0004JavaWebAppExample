@@ -8,6 +8,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.List;
 
 public class DataLoader {
 
@@ -20,7 +21,7 @@ public class DataLoader {
     }
 
     private void addValues(DataFrame dataFrame, CSVRecord csvRow,
-                          ArrayList<String > columnNames)
+                          List<String > columnNames)
     {
         for (int i = 0; i < csvRow.size(); i++ ){
             dataFrame.addValue(columnNames.get(i), csvRow.get(i) );
@@ -30,7 +31,7 @@ public class DataLoader {
     public DataFrame loadData(String filename){
         DataFrame dataFrame = new DataFrame();
         CSVFormat format = CSVFormat.DEFAULT;
-        ArrayList<String> columnNames = new ArrayList<>();
+        List<String> columnNames = new ArrayList<>();
 
         try(Reader reader = new FileReader(filename);
             CSVParser csvParser = new CSVParser(reader,format))
@@ -47,9 +48,7 @@ public class DataLoader {
             }
 
         }catch (IOException e){
-            // how does this work? how do i print smth like no file found?
-            //throw new RuntimeException("File not found: " + filename, e);
-            e.printStackTrace();
+            throw new RuntimeException("File not found: " + filename, e);
         }
         return dataFrame;
     }
