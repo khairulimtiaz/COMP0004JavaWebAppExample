@@ -1,4 +1,4 @@
 <div class="links">
-  <p>The footer</p>
+  <p>COMP0004 Coursework 2026</p>
   <div class="clearBoth"></div>
 </div>

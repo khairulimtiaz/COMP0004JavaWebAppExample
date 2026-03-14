@@ -44,20 +44,26 @@ public class Model {
     return patientsSummary;
   }
 
-  private List<String> getPatientInfo(int row)
-  {
-    List<String> matchedPatient = new ArrayList<>();
-
-    for (String column : dataFrame.getColumnNames())
-    {
-      matchedPatient.add(dataFrame.getValue(column, row));
+  public Map<String,String> getPatientById(String id) {
+    for (int row = 0; row < dataFrame.getRowCount(); row++) {
+      if (dataFrame.getValue("ID", row).equals(id)) {
+        return getPatientInfo(row);
+      }
     }
-
-    return matchedPatient;
+    throw new IllegalArgumentException("Patient not found: " + id);
   }
 
-  public List<List<String>> searchFor(String keyword) {
-    List<List<String>> matchedList = new ArrayList<>();
+  private Map<String,String> getPatientInfo(int row)
+  {
+    Map<String,String> patient = new HashMap<>();
+    for (String column : dataFrame.getColumnNames()) {
+      patient.put(column, dataFrame.getValue(column, row));
+    }
+    return patient;
+  }
+
+  public List<Map<String,String>> searchFor(String keyword) {
+    List<Map<String,String>> matchedList = new ArrayList<>();
     //allow search with lower/upper case
     String lowerKeyword = keyword.toLowerCase();
     for (int row = 0; row < dataFrame.getRowCount(); row++)
