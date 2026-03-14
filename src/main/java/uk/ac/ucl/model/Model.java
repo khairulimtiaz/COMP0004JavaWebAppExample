@@ -1,28 +1,47 @@
 package uk.ac.ucl.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Model {
-  private DataFrame dataFrame = new DataFrame();
+  private DataFrame dataFrame;
 
   public void loadData(String filename) {
     DataLoader loader = new DataLoader();
     dataFrame = loader.loadData(filename);
   }
 
-  public List<String> getPatientNames() {
-    List<String> patientNames = new ArrayList<>();
+  private Map<String,String> getOneSummary(int row)
+  {
+    Map<String,String> onePSummary = new HashMap<>();
 
+    String name = dataFrame.getValue("PREFIX", row) + " "
+            + dataFrame.getValue("FIRST", row) + " "
+            + dataFrame.getValue("LAST", row) + " "
+            + dataFrame.getValue("SUFFIX", row);
+
+    String birthdate = dataFrame.getValue("BIRTHDATE", row);
+    String deathdate = dataFrame.getValue("DEATHDATE", row);
+    String gender = dataFrame.getValue("GENDER", row);
+    String id = dataFrame.getValue("ID", row);
+
+    onePSummary.put("NAME", name);
+    onePSummary.put("BIRTHDATE", birthdate);
+    onePSummary.put("DEATHDATE", deathdate);
+    onePSummary.put("GENDER", gender);
+    onePSummary.put("ID", id);
+
+    return onePSummary;
+  }
+
+  public List<Map<String,String>> getPatientsSummary() {
+    List<Map<String,String>> patientsSummary = new ArrayList<>();
     for (int row = 0; row < dataFrame.getRowCount(); row++) {
-      String name = dataFrame.getValue("PREFIX", row) + " "
-              + dataFrame.getValue("FIRST", row) + " "
-              + dataFrame.getValue("LAST", row) + " "
-              + dataFrame.getValue("SUFFIX", row);
-      patientNames.add(name);
+      patientsSummary.add(getOneSummary(row));
     }
-
-    return patientNames;
+    return patientsSummary;
   }
 
   private List<String> getPatientInfo(int row)
@@ -39,13 +58,13 @@ public class Model {
 
   public List<List<String>> searchFor(String keyword) {
     List<List<String>> matchedList = new ArrayList<>();
-    //allow search with any case
+    //allow search with lower/upper case
     String lowerKeyword = keyword.toLowerCase();
     for (int row = 0; row < dataFrame.getRowCount(); row++)
     {
       for (String colName : dataFrame.getColumnNames())
       {
-        // search until matched or partially matched// maybe remove?
+        // search until matched or partially matched
         if (dataFrame.getValue(colName, row).toLowerCase()
                 .contains(lowerKeyword))
         {

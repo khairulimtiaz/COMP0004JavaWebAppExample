@@ -11,37 +11,38 @@ import java.util.ArrayList;
 
 public class DataLoader {
 
-    private void addColumnNames(DataFrame dataFrame, CSVRecord row)
+    private void addColumnNames(DataFrame dataFrame, CSVRecord csvRow)
     {
-        for (int i = 0; i < row.size(); i++ ){
-            String colName = row.get(i);
+        for (int i = 0; i < csvRow.size(); i++ ){
+            String colName = csvRow.get(i);
             dataFrame.addColumn(colName);
         }
     }
 
-    private void addValues(DataFrame dataFrame, CSVRecord row,
+    private void addValues(DataFrame dataFrame, CSVRecord csvRow,
                           ArrayList<String > columnNames)
     {
-        for (int i = 0; i < row.size(); i++ ){
-            dataFrame.addValue(columnNames.get(i), row.get(i) );
+        for (int i = 0; i < csvRow.size(); i++ ){
+            dataFrame.addValue(columnNames.get(i), csvRow.get(i) );
         }
     }
 
     public DataFrame loadData(String filename){
         DataFrame dataFrame = new DataFrame();
         CSVFormat format = CSVFormat.DEFAULT;
-        ArrayList<String> columnNames = dataFrame.getColumnNames();
+        ArrayList<String> columnNames = new ArrayList<>();
 
         try(Reader reader = new FileReader(filename);
-            CSVParser csvParser = new CSVParser(reader,format ))
+            CSVParser csvParser = new CSVParser(reader,format))
         {
-            for (CSVRecord row: csvParser){
-                if (row.getRecordNumber() == 1){
+            for (CSVRecord csvRow: csvParser){
+                if (csvRow.getRecordNumber() == 1){
                     // first row in file is column name, so add it first
-                    addColumnNames(dataFrame,row);
+                    addColumnNames(dataFrame,csvRow);
+                    columnNames = dataFrame.getColumnNames();
                 }
                 else{
-                    addValues(dataFrame,row,columnNames);
+                    addValues(dataFrame,csvRow,columnNames);
                 }
             }
 

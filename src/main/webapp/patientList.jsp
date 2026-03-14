@@ -1,39 +1,53 @@
 <%@ page import="java.util.List" %>
+<%@ page import="java.util.Map" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <html>
 <head>
   <jsp:include page="/meta.jsp"/>
-  <title>Patient Data App</title>
+  <title>Patient List</title>
 </head>
 <body>
 <jsp:include page="/header.jsp"/>
 <div class="main">
-  <h2>Patients:</h2>
+  <h2>Patient List</h2>
   <%
     String errorMessage = (String) request.getAttribute("errorMessage");
-    if (errorMessage != null)
-    {
+    if (errorMessage != null) {
   %>
-      <p style="color: red;"><%= errorMessage %></p>
+    <p style="color: red;"><%= errorMessage %></p>
   <%
     }
   %>
-  <ul>
+  <table border="1">
+    <tr>
+      <th>Name</th>
+      <th>Date of Birth</th>
+      <th>Gender</th>
+      <th>Status</th>
+    </tr>
     <%
-      List<String> patients = (List<String>) request.getAttribute("patientNames");
-      if (patients != null)
-      {
-        for (String patient : patients)
-        {
-          String href = "dummypage.html";
+      List<Map<String,String>> patients = (List<Map<String,String>>) request.getAttribute("patientsSummary");
+      if (patients != null) {
+        for (Map<String,String> patient : patients) {
+          String status;
+          if (patient.get("DEATHDATE").isEmpty()) {
+              status = "Alive";
+          } else {
+              status = "Deceased";
+          }
     %>
-    <li><a href="<%=href%>"><%=patient%></a>
-    </li>
-    <%  }
+    <tr>
+      <td><a href="/patientDetail?id=<%= patient.get("ID") %>"><%= patient.get("NAME") %></a></td>
+      <td><%= patient.get("BIRTHDATE") %></td>
+      <td><%= patient.get("GENDER") %></td>
+      <td><%= status %></td>
+    </tr>
+    <%
+        }
       }
     %>
-  </ul>
+  </table>
 </div>
 <jsp:include page="/footer.jsp"/>
 </body>
