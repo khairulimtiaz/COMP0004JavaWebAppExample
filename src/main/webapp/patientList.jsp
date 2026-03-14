@@ -19,6 +19,7 @@
   <%
     }
   %>
+  <a href="/addPatient">Add New Patient</a>
   <table border="1">
     <tr>
       <th>Name</th>

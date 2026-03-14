@@ -7,14 +7,25 @@ import java.util.Map;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.LinkedHashMap;
+import java.util.UUID;
+//add Sort??
 
 public class Model {
   private DataFrame dataFrame;
+  private String dataFile;
 
   public void loadData(String filename) {
+    this.dataFile = filename;
     DataLoader loader = new DataLoader();
     dataFrame = loader.loadData(filename);
   }
+
+  private void saveData()
+  {
+    DataWriter writer = new DataWriter();
+    writer.writeData(dataFrame, dataFile);
+  }
+
 
   private Map<String,String> getOneSummary(int row)
   {
@@ -159,5 +170,63 @@ public class Model {
     }
     return cityCount;
   }
+
+  public void deletePatient(String id)
+  {
+    for (int row = 0; row < dataFrame.getRowCount(); row++)
+    {
+      if (dataFrame.getValue("ID", row).equals(id))
+      {
+        dataFrame.removeRow(row);
+        saveData();
+        return;
+      }
+    }
+    throw new IllegalArgumentException("Patient not found: " + id);
+  }
+
+  public void addPatient(Map<String,String> patientData)
+  {
+    // Generate unique ID for the new patient
+    String id = UUID.randomUUID().toString();
+
+    for (String column : dataFrame.getColumnNames())
+    {
+      if (column.equals("ID"))
+      {
+        dataFrame.addValue(column, id);
+      }
+      else
+      {
+        // Use empty string for any missing fields to stay consistent with CSV format
+        String value = patientData.getOrDefault(column, "");
+        dataFrame.addValue(column, value);
+      }
+    }
+    saveData();
+  }
+
+  public void editPatient(String id, Map<String,String> updatedData)
+  {
+    for (int row = 0; row < dataFrame.getRowCount(); row++)
+    {
+      if (dataFrame.getValue("ID", row).equals(id))
+      {
+        // Update each column except ID which stays the same
+        for (String column : dataFrame.getColumnNames())
+        {
+          if (!column.equals("ID"))
+          {
+            String value = updatedData.getOrDefault(column, "");
+            dataFrame.putValue(column, row, value);
+          }
+        }
+        saveData();
+        return;
+      }
+    }
+    throw new IllegalArgumentException("Patient not found: " + id);
+  }
+
 
 }

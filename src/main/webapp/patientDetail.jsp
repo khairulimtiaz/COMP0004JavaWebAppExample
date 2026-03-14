@@ -31,6 +31,11 @@
         }
     %>
     <br>
+    <a href="/editPatient?id=<%= patient.get("ID") %>">Edit Patient</a> |
+    <a href="/deletePatient?id=<%= patient.get("ID") %>"
+       onclick="return confirm('Are you sure you want to delete this patient?');">Delete Patient</a>
+    <br>
+    <br>
     <a href="/patientList">Back to Patient List</a> | <a href="/index.html">Home</a>
 </div>
 <jsp:include page="/footer.jsp"/>

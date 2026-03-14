@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DataFrame {
-    private ArrayList<Column> columns = new ArrayList<>();
+    private List<Column> columns = new ArrayList<>();
 
     public void addColumn(String name)
     {
@@ -50,5 +50,13 @@ public class DataFrame {
 
     public void addValue(String columnName, String value){
         getColumn(columnName).addRowValue(value);
+    }
+
+    public void removeRow(int row)
+    {
+        for (Column column : columns)
+        {
+            column.removeRow(row);
+        }
     }
 }
